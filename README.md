@@ -6,3 +6,5 @@ Make sure to launch game with "Launch" button to open 'ModernWarfare.exe' and if
 When launching 1.20 LAN you have to launch with "1.20 LAN LAUNCH" option. Once game has opened, go to LAN custom game from Multiplayer Lobby, you can select Verdansk and Battle Royale there, and if connected to same Radmin server as people, others can join.
 
 All code is completely open source and open for people to edit if wanted to, or even use for reference.
+
+Also in "Releases" the full Electron file with be in a Zip for people to download.
