@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IW8-Mod Launcher</title>
+  <style>
+    :root {
+      --bg-dark: #0d0f14;
+      --panel-dark: #151821;
+      --panel-light: #1e222e;
+      --accent-neon: #00ffcc;
+      --accent-dim: rgba(0, 255, 204, 0.15);
+      --text-main: #f0f3f8;
+      --text-muted: #7a8296;
+      --border-color: #262b3a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      padding: 20px;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      user-select: none;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .header {
+      border-bottom: 2px solid var(--accent-neon);
+      padding-bottom: 12px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      text-shadow: 0 0 10px var(--accent-dim);
+    }
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+      font-weight: bold;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .panel {
+      background-color: var(--panel-dark);
+      border: 1px solid var(--border-color);
+      padding: 12px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .btn {
+      background-color: var(--panel-light);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .btn:hover {
+      background-color: var(--border-color);
+      border-color: var(--text-muted);
+    }
+
+    .path-text {
+      color: var(--text-muted);
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex-grow: 1;
+    }
+
+    /* BUILDS GRID */
+    .builds-container {
+      background-color: var(--panel-dark);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      flex-grow: 1;
+      overflow-y: auto;
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+      align-content: start;
+    }
+
+    .build-card {
+      background-color: var(--panel-light);
+      border: 2px solid transparent;
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.2s ease;
+      position: relative;
+    }
+
+    .build-card:hover {
+      background-color: rgba(255,255,255,0.05);
+      border-color: var(--border-color);
+    }
+
+    .build-card.active {
+      border-color: var(--accent-neon);
+      background-color: var(--accent-dim);
+      box-shadow: 0 4px 12px rgba(0,255,204,0.1);
+    }
+
+    .build-icon {
+      width: 48px;
+      height: 48px;
+      margin-bottom: 10px;
+      object-fit: contain;
+    }
+
+    .build-name {
+      font-size: 13px;
+      font-weight: bold;
+      margin-bottom: 4px;
+      width: 100%;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .build-version {
+      font-size: 10px;
+      background-color: rgba(0,0,0,0.4);
+      padding: 2px 6px;
+      border-radius: 4px;
+      color: var(--text-muted);
+    }
+    
+    .build-card.active .build-version {
+      color: var(--accent-neon);
+    }
+
+    /* DLL OPTIONS */
+    .options-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+    }
+
+    .patch-opt {
+      background-color: var(--panel-dark);
+      border: 1px solid var(--border-color);
+      padding: 10px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 13px;
+      font-weight: bold;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .patch-opt.active {
+      border-color: var(--accent-neon);
+      color: var(--accent-neon);
+      background-color: var(--accent-dim);
+    }
+
+    /* ACTION WORKSPACE */
+    .launch-section {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      width: 100%;
+    }
+
+    .status-box {
+      color: var(--text-muted);
+      font-size: 13px;
+      text-align: center;
+      height: 20px;
+    }
+
+    .actions-group {
+      display: flex;
+      gap: 12px;
+      width: 100%;
+    }
+
+    .btn-action {
+      background: var(--panel-dark);
+      padding: 16px 12px;
+      font-size: 14px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 1;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+
+    #launch-btn {
+      border: 2px solid var(--border-color);
+      color: var(--text-main);
+    }
+
+    #launch-btn:hover {
+      border-color: var(--accent-neon);
+      box-shadow: 0 0 15px var(--accent-dim);
+      color: #fff;
+    }
+
+    #lan-launch-btn {
+      border: 2px solid #38bdf8;
+      color: #38bdf8;
+    }
+
+    #lan-launch-btn:hover {
+      border-color: #7dd3fc;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.2);
+      color: #fff;
+    }
+
+    #close-btn {
+      border: 2px solid #ff4d4d;
+      color: #ff4d4d;
+    }
+
+    #close-btn:hover {
+      border-color: #ff3333;
+      box-shadow: 0 0 15px rgba(255, 77, 77, 0.2);
+      color: #ff6666;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+  </style>
+</head>
+<body>
+
+  <div class="header">IW8 Version Manager</div>
+  
+  <div class="section-label">
+    Master Builds Folder
+    <button class="btn" id="select-btn">Change Directory</button>
+  </div>
+  <div class="panel" style="margin-bottom: 8px;">
+    <span class="path-text" id="master-path-display">No master directory selected...</span>
+  </div>
+
+  <div class="section-label">Available Game Builds</div>
+  <div class="builds-container" id="builds-grid">
+    <div style="color: var(--text-muted); font-size: 12px; grid-column: 1 / -1; text-align: center; padding-top: 20px;">
+      Select a master folder containing your game builds.
+    </div>
+  </div>
+
+  <div class="section-label">Injection Payload (DLL)</div>
+  <div class="options-group" id="options-group"></div>
+
+  <div class="launch-section">
+    <div class="status-box" id="status-display">Awaiting configuration...</div>
+    <div class="actions-group">
+      <button class="btn-action" id="launch-btn">LAUNCH</button>
+      <button class="btn-action" id="lan-launch-btn">1.20 LAN LAUNCH</button>
+      <button class="btn-action" id="close-btn">CLOSE GAME</button>
+    </div>
+  </div>
+
+  <script src="renderer.js"></script>
+</body>
+</html>
